@@ -1,0 +1,6 @@
+[package]
+name = "rust-flaskr"
+version = "0.1.0"
+authors = ["Kristoffer Andersson <kode.kristoff@gmail.com>"]
+
+[dependencies]
