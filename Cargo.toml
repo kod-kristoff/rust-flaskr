@@ -6,3 +6,10 @@ authors = ["Kristoffer Andersson <kode.kristoff@gmail.com>"]
 [dependencies]
 thruster = "0.5"
 futures = "*"
+serde = "*"
+serde_json = "*"
+tokio = "*"
+dotenv = "*"
+diesel = { version = "1.3", features = ["sqlite", "r2d2"]}
+lazy_static = "*"
+smallvec = "*"
