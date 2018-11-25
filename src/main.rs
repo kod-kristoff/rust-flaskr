@@ -5,6 +5,7 @@ extern crate serde_json;
 extern crate smallvec;
 extern crate tokio;
 extern crate dotenv;
+extern crate chrono;
 
 #[macro_use] extern crate diesel;
 #[macro_use] extern crate lazy_static;
@@ -22,7 +23,7 @@ use context::{Ctx, generate_context};
 use diesel::prelude::*;
 use diesel::sqlite::SqliteConnection;
 use diesel::r2d2::{ConnectionManager, Pool};
-use schema::content::dsl::*;
+use schema::posts::dsl::*;
 use dotenv::dotenv;
 use std::env;
 
@@ -41,13 +42,13 @@ lazy_static! {
 fn fetch_value(mut context: Ctx, _chain: &MiddlewareChain<Ctx>) -> MiddlewareReturnValue<Ctx> {
   let conn = db.get().unwrap();
 
-  let results = content
+  let results = posts
     .limit(1)
-    .load::<content_model::Content>(&conn)
+    .load::<content_model::Post>(&conn)
     .unwrap();
 
   let result = results.get(0).unwrap();
-  context.body = result.val.clone();
+  context.body = result.title.clone();
 
   Box::new(future::ok(context))
 }
