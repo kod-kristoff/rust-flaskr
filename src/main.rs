@@ -12,7 +12,7 @@ extern crate chrono;
 
 mod context;
 mod schema;
-mod content_model;
+mod models;
 
 use futures::future;
 
@@ -44,7 +44,7 @@ fn fetch_value(mut context: Ctx, _chain: &MiddlewareChain<Ctx>) -> MiddlewareRet
 
   let results = posts
     .limit(1)
-    .load::<content_model::Post>(&conn)
+    .load::<models::Post>(&conn)
     .unwrap();
 
   let result = results.get(0).unwrap();
