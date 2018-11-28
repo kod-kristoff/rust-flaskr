@@ -39,7 +39,9 @@ lazy_static! {
     };
 }
 
-fn fetch_value(mut context: Ctx, _chain: &MiddlewareChain<Ctx>) -> MiddlewareReturnValue<Ctx> {
+fn fetch_value(mut context: Ctx,
+               _chain: &MiddlewareChain<Ctx>)
+              -> MiddlewareReturnValue<Ctx> {
   let conn = db.get().unwrap();
 
   let results = posts
@@ -53,7 +55,18 @@ fn fetch_value(mut context: Ctx, _chain: &MiddlewareChain<Ctx>) -> MiddlewareRet
   Box::new(future::ok(context))
 }
 
-fn not_found_404(mut context: Ctx, _chain: &MiddlewareChain<Ctx>) -> MiddlewareReturnValue<Ctx> {
+fn register(mut context: Ctx,
+            _chain: &MiddlewareChain<Ctx>)
+            -> MiddlewareReturnValue<Ctx> {
+    context.body = "<html>register stub</html>".to_owned();
+    context.set_header("Content-Type", "text/html");
+
+    Box::new(future::ok(context))
+}
+
+fn not_found_404(mut context: Ctx,
+                 _chain: &MiddlewareChain<Ctx>)
+                 -> MiddlewareReturnValue<Ctx> {
   context.body = "<html>
   ( ͡° ͜ʖ ͡°) What're you looking for here?
 </html>".to_owned();
@@ -68,7 +81,12 @@ fn main() {
 
   let mut app = App::create(generate_context);
 
+  let mut auth_app = App::create(generate_context);
+  auth_app.get("/register", vec![register]);
+  // auth_app.post("/register", vec![do_register]);
+
   app.get("/plaintext", vec![fetch_value]);
+  app.use_sub_app("/auth", auth_app);
   app.get("/*", vec![not_found_404]);
 
   let server = Server::new(app);
